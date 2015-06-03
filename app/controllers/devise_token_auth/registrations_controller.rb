@@ -58,12 +58,12 @@ module DeviseTokenAuth
             errors: @resource.errors.to_hash.merge(full_messages: @resource.errors.full_messages)
           }, status: 403
         end
-      rescue ActiveRecord::RecordNotUnique
+      rescue Mongoid::Errors::Validations
         clean_up_passwords @resource
         render json: {
           status: 'error',
           data:   @resource,
-          errors: ["An account already exists for #{@resource.email}"]
+          errors: @resource.errors.to_hash.merge(full_messages: @resource.errors.full_messages)
         }, status: 403
       end
     end
